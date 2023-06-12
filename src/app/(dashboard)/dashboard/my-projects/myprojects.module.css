@@ -1,0 +1,12 @@
+.myprojects__title {
+    padding: 20px;
+    font-size: 3em;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+.myprojects__search_filter {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding-bottom: 30px;
+}

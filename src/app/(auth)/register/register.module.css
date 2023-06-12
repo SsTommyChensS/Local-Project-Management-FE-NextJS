@@ -1,0 +1,22 @@
+.register__section {
+    width: 80%;
+    min-height: 80vh;
+    padding: 40px 50px;
+}
+
+.register__title {
+    text-align: left;
+    padding: 40px 0;
+    font-size: 2em;
+    font-weight: bold;
+}
+
+.register__login_link {
+    font-style: italic;
+    text-decoration: underline;
+    color: darkslateblue;
+}
+
+.register__login_link:hover {
+    color: blue;
+}

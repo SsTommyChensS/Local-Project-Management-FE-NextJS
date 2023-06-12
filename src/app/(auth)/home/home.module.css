@@ -1,0 +1,30 @@
+.homepage {
+    background: url('/home_background.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    color: white;
+    min-height: 80vh;
+    padding: 40px 0;
+    text-align: center;
+}
+
+.homepage__title {
+    font-size: 4em;
+    font-weight: bolder;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+.homepage__content {
+    padding: 80px;
+    font-style: italic;
+    font-size: 2em;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.homepage__author {
+    color: #CC3333;
+    padding: 40px;
+    font-style: italic;
+    font-weight: bold;
+    font-size: 1em;
+}
