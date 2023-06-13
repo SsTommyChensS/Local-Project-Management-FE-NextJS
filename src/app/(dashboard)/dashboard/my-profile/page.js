@@ -138,8 +138,15 @@ const MyProfile = () => {
                     <input {...register("code")} type="text" id="code" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200" disabled/>
                 </div>
                 <div className="flex flex-row gap-6">
-                    <button type="button" onClick={() => setisDisabled(!isDisabled)} className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:focus:ring-yellow-800">Update</button>
-                    <button type="submit" className="text-white bg-blue-700 disabled:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:focus:ring-blue-800" disabled={isDisabled}>Save</button>
+                    <button type="button" onClick={() => setisDisabled(!isDisabled)} className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:focus:ring-yellow-800">
+                        Update <img src="/update.svg" className="inline ml-2 w-5 h-5"/>
+                    </button>
+                    <button type="submit" className="text-white bg-blue-700 disabled:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:focus:ring-blue-800" disabled={isDisabled}>
+                        Save  <img src="/save.svg" className="inline ml-2 w-5 h-5"/>
+                    </button>
+                    <button type="button" className="text-white bg-green-700 disabled:bg-gray-300 hover:bg-green-800 rounded-lg px-5 py-2.5" disabled={isDisabled}>
+                        Upload Avatar <img src="/upload_avatar.svg" className="inline ml-2 w-5 h-5"/>
+                    </button>
                 </div>
             </form>
         </div>
