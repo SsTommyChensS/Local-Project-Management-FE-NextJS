@@ -8,15 +8,18 @@ import axios from "axios"
 
 import style from './login.module.css'
 
+import { useEffect, useState } from "react"
+
 import SuccessMessage from "@/components/Items/SuccessMessage"
 import ErrorMessage from "@/components/Items/ErrorMessage"
-import { useEffect, useState } from "react"
+
+import { login } from "@/services/authService"
 
 
 const Login = () => {
-    const [success, setSuccess] = useState(false);
     const [successMsg, setSuccessMsg] = useState('');
-    const [errorMsg, setErrorMsg] = useState('hello');
+    const [errorMsg, setErrorMsg] = useState('');
+    const [displayMsg, setDisplayMsg] = useState(false);
 
     const validationSchema = Yup.object().shape({
         username: Yup.string()
@@ -30,20 +33,49 @@ const Login = () => {
     });
 
     const formOptions = { resolver: yupResolver(validationSchema) };
-    const { register, handleSubmit, formState } = useForm(formOptions);
+    const { register, handleSubmit, reset, formState } = useForm(formOptions);
     const { errors } = formState;
 
     const onSubmit = async (data) => {
-        try {
-            const response = await axios.post("http://localhost:8000/api/auth/login", data);
-            setSuccessMsg(response.message);
-            console.log(response);
-        } catch (err) {
-            const data_error = err.response.data;
-            console.log(data_error.message);
-            setErrorMsg(data_error.message);
-        }
+        login(data)
+        .then(response => {
+            setSuccessMsg(response.data.message);
+            setDisplayMsg(true);
+
+            setTimeout(() => {
+                setSuccessMsg('');
+                setDisplayMsg(false);
+            }, 5000);
+        })
+        .catch(error => {
+            const error_response = error.response;
+
+            setErrorMsg(`Error ${error_response.status}: ${error_response.data.message}`);
+            setDisplayMsg(true);
+
+            setTimeout(() => {
+                setErrorMsg('');
+                setDisplayMsg(false);
+            }, 5000);
+        });
+
+        
     };
+
+     //Display message
+     const DisplayMessage = () => {
+        if(displayMsg && successMsg != '') {
+            return (
+                <SuccessMessage message={successMsg} />
+            )
+        } 
+
+        if(displayMsg && errorMsg != '') {
+            return (
+                <ErrorMessage message={errorMsg} />
+            )
+        }
+    }
 
     return (
         <div className={style.login__section}>
@@ -62,18 +94,16 @@ const Login = () => {
                 <div className="flex items-start mb-6">
                     <Link href="register" className={style.login__register_link}>Don't have account? Register here</Link>
                 </div>
-                {
-                    success && (
-                        <SuccessMessage message="Success!"/>
-                    )
-                }          
-                <ErrorMessage message="Error!"/>
                 <div className="flex flex-row gap-6">
                     <button type="submit" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Login</button>
-                    <button type="reset" className="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Reset</button>
+                    <button type="button"  onClick={() => reset()} className="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Reset</button>
+                </div>
+                <div className="pt-4">
+                    <DisplayMessage />     
                 </div>  
             </form>
         </div>
+       
     )
 }
 
