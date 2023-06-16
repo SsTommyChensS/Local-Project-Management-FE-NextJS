@@ -1,13 +1,24 @@
 "use client"
 
+import { useState } from "react"
 import Link from "next/link"
 import { useForm } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as Yup from "yup"
 
 import style from './register.module.css'
+import SuccessMessage from "@/components/Items/SuccessMessage"
+import ErrorMessage from "@/components/Items/ErrorMessage"
+
+import axios from "axios"
+import { signup } from "@/services/authService"
+
 
 const Register = () => {
+    const [successMsg, setSuccessMsg] = useState('');
+    const [errorMsg, setErrorMsg] = useState('');
+    const [displayMsg, setDisplayMsg] = useState(false);
+
     const validationSchema = Yup.object().shape({
         fullname: Yup.string()
                 .trim()
@@ -48,12 +59,48 @@ const Register = () => {
     });
     
     const formOptions = { resolver: yupResolver(validationSchema) };
-    const { register, handleSubmit, formState } = useForm(formOptions);
+    const { register, handleSubmit, reset,formState } = useForm(formOptions);
     const { errors } = formState;
 
+    //Register
     const onSubmit = (data) => {
-        alert(JSON.stringify(data));
+        signup(data)
+            .then(response => {
+                setSuccessMsg(response.data.message);
+                setDisplayMsg(true);
+
+                setTimeout(() => {
+                    setSuccessMsg('');
+                    setDisplayMsg(false);
+                }, 5000);
+            })
+            .catch(error => {
+                const error_response = error.response;
+
+                setErrorMsg(`Error ${error_response.status}: ${error_response.data.message}`);
+                setDisplayMsg(true);
+
+                setTimeout(() => {
+                    setErrorMsg('');
+                    setDisplayMsg(false);
+                }, 5000);
+            })
     };
+
+    //Display message
+    const DisplayMessage = () => {
+        if(displayMsg && successMsg != '') {
+            return (
+                <SuccessMessage message={successMsg} />
+            )
+        } 
+
+        if(displayMsg && errorMsg != '') {
+            return (
+                <ErrorMessage message={errorMsg} />
+            )
+        }
+    }
 
     return (
         <div className={style.register__section}>
@@ -116,9 +163,12 @@ const Register = () => {
                 </div>
                 <div className="flex flex-row gap-6">
                     <button type="submit" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Register</button>
-                    <button type="reset" className="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Reset</button>
+                    <button type="button"  onClick={() => reset()} className="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Reset</button>
                 </div>          
             </form>
+            <div className="pt-8">
+                <DisplayMessage/>
+            </div>
         </div>
     )
 }
