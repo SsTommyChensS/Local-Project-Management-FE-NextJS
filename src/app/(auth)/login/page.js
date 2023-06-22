@@ -1,22 +1,23 @@
 "use client"
 
 import Link from "next/link"
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as Yup from "yup"
-import axios from "axios"
 
 import style from './login.module.css'
-
-import { useEffect, useState } from "react"
 
 import SuccessMessage from "@/components/Items/SuccessMessage"
 import ErrorMessage from "@/components/Items/ErrorMessage"
 
 import { login } from "@/services/authService"
 
+import { setCookie } from "cookies-next"
+import { useState } from "react"
 
 const Login = () => {
+    const { push } = useRouter();
     const [successMsg, setSuccessMsg] = useState('');
     const [errorMsg, setErrorMsg] = useState('');
     const [displayMsg, setDisplayMsg] = useState(false);
@@ -42,10 +43,15 @@ const Login = () => {
             setSuccessMsg(response.data.message);
             setDisplayMsg(true);
 
+            //Set accessToken at cookie
+            const accessToken = response.data.data.accessToken;
+            setCookie("token", accessToken, {
+                maxAge: 60 * 60 //1h
+            });
+
             setTimeout(() => {
-                setSuccessMsg('');
-                setDisplayMsg(false);
-            }, 5000);
+                push('/dashboard');
+            }, 3000);
         })
         .catch(error => {
             const error_response = error.response;
@@ -102,8 +108,7 @@ const Login = () => {
                     <DisplayMessage />     
                 </div>  
             </form>
-        </div>
-       
+        </div>      
     )
 }
 
