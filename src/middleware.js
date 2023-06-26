@@ -2,7 +2,6 @@ import { setCookie, getCookie } from "cookies-next";
 
 import { NextResponse } from 'next/server'
 import { renewToken } from "./services/authService";
-import { useRouter } from "next/navigation";
 
 export function middleware(req) {
   const refreshToken = req.cookies.get("jwt")?.value;
@@ -21,7 +20,7 @@ export function middleware(req) {
           });
           })
           .catch(error => {
-            console.log(error.response.data.message);
+            console.log(error);
           });
       }
       const url = req.nextUrl.clone();
