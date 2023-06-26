@@ -45,10 +45,14 @@ const Login = () => {
 
             //Set accessToken at cookie
             const accessToken = response.data.data.accessToken;
+            const username = response.data.data.username;
             setCookie("token", accessToken, {
                 maxAge: 60 * 60 //1h
             });
 
+            setCookie("username", username, {
+                maxAge: 60 * 60 * 24
+            });
             setTimeout(() => {
                 push('/dashboard');
             }, 3000);
