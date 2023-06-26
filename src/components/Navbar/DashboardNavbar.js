@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { deleteCookie } from "cookies-next";
+import { useState, useEffect } from "react"
+import { deleteCookie, getCookie } from "cookies-next";
 
 import { logout } from "@/services/authService";
 import { redirect } from "next/dist/server/api-utils";
@@ -28,11 +29,17 @@ const handleLogout = () => {
 
     //Remove accessToken in cookie
     deleteCookie("token");
-    redirect("/home");
+    deleteCookie("username");
+    redirect('/home');
 }
 
 const DashboardNavbar = () => {
-    const username = "QTung1999";
+    const [username, setUsername] = useState('');
+
+    useEffect(() => {
+        const username_data = getCookie("username");
+        setUsername(username_data);
+    }, []);
 
     return (
         <div className="navbar">
@@ -52,7 +59,7 @@ const DashboardNavbar = () => {
                                 <Link href="" className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Hello <span className="text-red-700">{username}</span></Link>
                             </li>
                             <li>
-                                <Link onClick={handleLogout} href="/" className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Logout <Image className="inline ml-2" src="/logout.svg" width={20} height={20} alt="Logout icon"/></Link>
+                                <Link onClick={handleLogout} href="/home" className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Logout <Image className="inline ml-2" src="/logout.svg" width={20} height={20} alt="Logout icon"/></Link>
                             </li>
                         </ul>
                     </div>
