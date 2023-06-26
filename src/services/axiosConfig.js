@@ -7,11 +7,15 @@ const instance = axios.create({
 });
 
 //set Authorization when logged in
-const accessToken = getCookie("token");
-if(accessToken === undefined) {
-    instance.defaults.headers.common['Authorization'] = '';
-} else {
-    instance.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
-}
+instance.interceptors.request.use(function(config) {
+    const token = getCookie("token");
+    if(token === undefined) {
+        config.headers.Authorization = '';
+    } else {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    return config;
+});
 
 export default instance;
