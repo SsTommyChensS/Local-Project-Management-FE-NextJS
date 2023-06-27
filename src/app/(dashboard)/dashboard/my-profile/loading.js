@@ -1,7 +1,9 @@
 import LoadingMessage from "@/components/Items/LoadingMessage"
 
-export default function Loading() {
+const Loading = () => {
     return (
         <LoadingMessage />
     )
-}
+};
+
+export default Loading;
