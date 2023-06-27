@@ -1,98 +1,57 @@
-import style from './myprojects.module.css'
+"use client";
 
-const data_sample = {
-    "status": "Success",
-    "message": "Get my projects successfully!",
-    "data": [
-        {
-            "_id": "6472b9d240f6e4b5a823b669",
-            "title": "My Project 1",
-            "description": "This my project 1 using ExpressJS and MongoDB",
-            "content": "<p>Hello everyone! This is my first project with Express and MongoDB</p>",
-            "status": 4,
-            "progress": 10,
-            "start_date": "2023-05-16T00:00:00.000Z",
-            "end_date": "2023-05-28T00:00:00.000Z",
-            "createdAt": "2023-05-28T02:17:54.242Z",
-            "updatedAt": "2023-06-03T08:24:12.828Z",
-            "__v": 0
-        },
-        {
-            "_id": "64747c661717e667514371d5",
-            "title": "My Project 2",
-            "description": "This my project 1 using PHP and MySQL",
-            "content": "<p>Hello everyone! This is my first project with Express and PHP and MySQL</p>",
-            "status": 2,
-            "progress": 10,
-            "start_date": "2023-05-29T00:00:00.000Z",
-            "end_date": "2023-06-28T00:00:00.000Z",
-            "createdAt": "2023-05-29T10:20:22.061Z",
-            "updatedAt": "2023-06-03T08:40:40.622Z",
-            "__v": 0
-        }
-    ]
-};
+import { useState, useEffect } from 'react';
+import style from './myprojects.module.css';
 
-//Display status
-const displayStatus = (status) => {
-    switch(status){
-        case 1: { return (
-            <span className="text-green-300 font-bold">New</span>
-        )}
-        case 2: { return (
-            <span className="text-yellow-300 font-bold">In Progress</span>
-        )}
-        case 3: { return (
-            <span className="text-blue-300 font-bold">Done</span>
-        )}
-        case 4: { return (
-            <span className="text-red-600 font-bold">Out of date</span>
-        )}
-    }
-}
+import Pagination from '@/components/Pagination/Pagination';
+import AddProject from '@/components/Project/AddProject';
 
-//Convert date time
-const displayDate = (data) => {
-    let date = new Date(data);
-    let date_convert = date.toLocaleDateString();
-    return date_convert;
-}
-
-//Display button
-const displayButton = () => {
-    return (
-        <>
-            <button className="bg-yellow-700 hover:bg-yellow-800 text-white p-2 rounded-lg w-full">Update <img src="/update.svg" className="inline ml-2 w-4 h-4"/></button>
-            <button className="bg-red-700 hover:bg-red-800 text-white p-2 rounded-lg w-full">Remove <img src="/remove.svg" className="inline ml-2 w-3 h-3"/></button>
-            <button className="bg-pink-700 hover:bg-pink-800 text-white p-2 rounded-lg w-full">Members <img src="/member.svg" className="inline ml-2 w-4 h-4"/></button>
-            <button className="bg-green-700 hover:bg-green-800 text-white p-2 rounded-lg w-full">Tasks <img src="/task.svg" className="inline ml-2 w-4 h-4"/></button>
-            <button className="bg-red-400 hover:bg-red-500 text-white p-2 rounded-lg w-full">Comments <img src="/comment.svg" className="inline ml-2 w-4 h-4"/></button>
-            <button className="bg-orange-400 hover:bg-orange-500 text-white p-2 rounded-lg w-full">Attachments <img src="/attachment.svg" className="inline ml-2 w-4 h-4"/></button>
-        </>
-    )
-}
-
-const list_projects = data_sample.data.map((project, index) => {
-    return (
-        <tr key={project._id} className="bg-white hover:bg-gray-50">
-            <td className="px-6 py-4">{index+1}</td>
-            <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                {project.title}
-            </th>
-            <td className="px-6 py-4">{project.description}</td>
-            <td className="px-6 py-4">{project.content}</td>
-            <td className="px-6 py-4">{displayStatus(project.status)}</td>
-            <td className="px-6 py-4">{project.progress + ' %'}</td>
-            <td className="px-6 py-4">{displayDate(project.start_date)}</td>
-            <td className="px-6 py-4">{displayDate(project.end_date)}</td>
-            <td className="px-6 py-4 flex flex-wrap items-center gap-x-4 gap-y-2">
-                {displayButton()}
-            </td>
-        </tr>
-    )
-});
+import { getMyProjects } from '@/services/projectService';
 
 const MyProjects = () => {
+    const [option, setOption] = useState(0);
+    const [projects, setProjects] = useState([]);
+    const [totalPage, setTotalPage] = useState(1);
+    const [currentPage, setCurrentPage] = useState(1);
+
+    const list_projects = projects.map((project, index) => {
+        return (
+            <tr key={project._id} className="bg-white hover:bg-gray-50">
+                <td className="px-6 py-4">{index+1}</td>
+                <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                    {project.title}
+                </th>
+                <td className="px-6 py-4">{project.description}</td>
+                <td className="px-6 py-4">{project.content}</td>
+                <td className="px-6 py-4">{displayStatus(project.status)}</td>
+                <td className="px-6 py-4">{project.progress + ' %'}</td>
+                <td className="px-6 py-4">{displayDate(project.start_date)}</td>
+                <td className="px-6 py-4">{displayDate(project.end_date)}</td>
+                <td className="px-6 py-4 flex flex-wrap items-center gap-x-4 gap-y-2">
+                    {displayButton(project)}
+                </td>
+            </tr>
+        )
+    });
+
+    useEffect(() => {
+        getMyProjects(currentPage)
+            .then(response => {
+                const response_data = response.data;
+                const items = response_data.data;
+
+                const totalItems = response_data.totalItems;
+                const itemsEachPage = response_data.itemsEachPage;
+                //Count total pages 
+                const pages = Math.ceil(totalItems / itemsEachPage);
+                setProjects(items);
+                setTotalPage(pages);
+            })
+            .catch(error => {
+                console.log(error.response);
+            })
+    }, [currentPage])
+
     return (
         <div className="myprojects p-4 w-fit">
             <h1 className={style.myprojects__title}>My Projects</h1>
@@ -122,33 +81,15 @@ const MyProjects = () => {
                 <table className="table-auto text-sm text-left text-gray-500 bg-gray-500 w-full">
                         <thead className="text-xs text-white uppercase">
                             <tr>
-                                <th scope="col" className="px-6 py-3">
-                                    No
-                                </th>
-                                <th scope="col" className="px-6 py-3">
-                                    Title
-                                </th>
-                                <th scope="col" className="px-6 py-3">
-                                    Description
-                                </th>
-                                <th scope="col" className="px-6 py-3">
-                                    Content
-                                </th>
-                                <th scope="col" className="px-6 py-3">
-                                    Status
-                                </th>
-                                <th scope="col" className="px-6 py-3">
-                                    Progress
-                                </th>
-                                <th scope="col" className="px-6 py-3">
-                                    Start Date
-                                </th>
-                                <th scope="col" className="px-6 py-3">
-                                    End Date
-                                </th>
-                                <th scope="col" className="px-6 py-3">
-                                    Actions
-                                </th>
+                                <th scope="col" className="px-6 py-3">No</th>
+                                <th scope="col" className="px-6 py-3">Title</th>
+                                <th scope="col" className="px-6 py-3">Description</th>
+                                <th scope="col" className="px-6 py-3">Content</th>
+                                <th scope="col" className="px-6 py-3">Status</th>
+                                <th scope="col" className="px-6 py-3">Progress</th>
+                                <th scope="col" className="px-6 py-3">Start Date</th>
+                                <th scope="col" className="px-6 py-3">End Date</th>
+                                <th scope="col" className="px-6 py-3">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -156,6 +97,7 @@ const MyProjects = () => {
                         </tbody>
                 </table>
             </div>
+            <Pagination totalPage={totalPage} setPage={setCurrentPage}/>
             <div className="px-4 py-6">
                 <button className="bg-green-400 text-white p-2 rounded-lg hover:bg-green-700">Add Project
                     <svg className="inline fill-white ml-1" width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -168,5 +110,50 @@ const MyProjects = () => {
         </div>
     )
 };
+
+//Display button
+const displayButton = (project) => {
+    return (
+        <>
+            <button onClick={() => actionData.hello(project)} className="bg-yellow-700 hover:bg-yellow-800 text-white p-2 rounded-lg w-full">Update <img src="/update.svg" className="inline ml-2 w-4 h-4"/></button>
+            <button className="bg-red-700 hover:bg-red-800 text-white p-2 rounded-lg w-full">Remove <img src="/remove.svg" className="inline ml-2 w-3 h-3"/></button>
+            <button className="bg-pink-700 hover:bg-pink-800 text-white p-2 rounded-lg w-full">Members <img src="/member.svg" className="inline ml-2 w-4 h-4"/></button>
+            <button className="bg-green-700 hover:bg-green-800 text-white p-2 rounded-lg w-full">Tasks <img src="/task.svg" className="inline ml-2 w-4 h-4"/></button>
+            <button className="bg-red-400 hover:bg-red-500 text-white p-2 rounded-lg w-full">Comments <img src="/comment.svg" className="inline ml-2 w-4 h-4"/></button>
+            <button className="bg-orange-400 hover:bg-orange-500 text-white p-2 rounded-lg w-full">Attachments <img src="/attachment.svg" className="inline ml-2 w-4 h-4"/></button>
+        </>
+    )
+}
+
+//Display status
+const displayStatus = (status) => {
+    switch(status){
+        case 1: { return (
+            <span className="text-green-300 font-bold">New</span>
+        )}
+        case 2: { return (
+            <span className="text-yellow-300 font-bold">In Progress</span>
+        )}
+        case 3: { return (
+            <span className="text-blue-300 font-bold">Done</span>
+        )}
+        case 4: { return (
+            <span className="text-red-600 font-bold">Out of date</span>
+        )}
+    }
+};
+
+//Convert date time
+const displayDate = (data) => {
+    let date = new Date(data);
+    let date_convert = date.toLocaleDateString();
+    return date_convert;
+};
+
+const actionData = {
+    hello: function (project) {
+        console.table(project);
+    }
+}
 
 export default MyProjects;
