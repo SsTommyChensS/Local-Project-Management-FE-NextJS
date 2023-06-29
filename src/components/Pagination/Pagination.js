@@ -1,13 +1,22 @@
 //Pagination
-const Pagination = ({ totalPage, setPage }) => {
+const Pagination = ({ totalPage, setPage, currentPage }) => {
     const displayPageNumber = () => {
         let content = [];
         for (let i = 0; i < totalPage; i++) {
-            content.push(
-                <li key={i} onClick={() => setPage(i + 1)}>
-                    <span className="mx-2 px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white hover:cursor-pointer">{i + 1}</span>
-                </li>
-            );
+            if(i + 1 == currentPage) {
+                content.push(
+                    <li key={i} onClick={() => setPage(i + 1)}>
+                        <span className="mx-2 px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-red-800 dark:border-gray-700 dark:text-white dark:hover:bg-red-700 dark:hover:text-white hover:cursor-pointer">{i + 1}</span>
+                    </li>
+                );
+            } else {
+                content.push(
+                    <li key={i} onClick={() => setPage(i + 1)}>
+                        <span className="mx-2 px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white hover:cursor-pointer">{i + 1}</span>
+                    </li>
+                );
+            }
+            
         }
         return content;
     };

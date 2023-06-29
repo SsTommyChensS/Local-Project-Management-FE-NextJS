@@ -158,7 +158,7 @@ const MyProjects = () => {
             </div>
             {
                 projects.length != 0 && 
-                <Pagination totalPage={totalPage} setPage={setCurrentPage}/>
+                <Pagination totalPage={totalPage} setPage={setCurrentPage} currentPage={currentPage} />
             }
             
             <div className="px-4 py-6">
