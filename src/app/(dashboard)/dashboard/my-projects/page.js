@@ -6,13 +6,14 @@ import style from './myprojects.module.css';
 import Pagination from '@/components/Pagination/Pagination';
 import AddProject from '@/components/Project/AddProject';
 
-import { getMyProjects } from '@/services/projectService';
+import { getMyProjects, getMyProjectsByStatus, getMyProjectsByTitle } from '@/services/projectService';
 
 const MyProjects = () => {
     const [option, setOption] = useState(0);
     const [projects, setProjects] = useState([]);
     const [totalPage, setTotalPage] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
+    const [title, setTitle] = useState('');
 
     const list_projects = projects.map((project, index) => {
         return (
@@ -34,12 +35,12 @@ const MyProjects = () => {
         )
     });
 
-    useEffect(() => {
+    //Get my projects
+    const handleGetMyProjects = (currentPage) => {
         getMyProjects(currentPage)
             .then(response => {
                 const response_data = response.data;
                 const items = response_data.data;
-
                 const totalItems = response_data.totalItems;
                 const itemsEachPage = response_data.itemsEachPage;
                 //Count total pages 
@@ -50,17 +51,74 @@ const MyProjects = () => {
             .catch(error => {
                 console.log(error.response);
             })
+    } 
+    //Get projects by status
+    const handleGetProjectsByStatus = (e) => {
+        setCurrentPage(1);
+        const status = e.target.value;
+        if(status == 5) {
+            handleGetMyProjects(currentPage);
+        } else {
+            getMyProjectsByStatus(status, currentPage)
+                .then(response => {
+                    const response_data = response.data;
+                    const items = response_data.data;
+
+                    const totalItems = response_data.totalItems;
+                    const itemsEachPage = response_data.itemsEachPage;
+                    //Count total pages 
+                    const pages = Math.ceil(totalItems / itemsEachPage);
+                    setProjects(items);
+                    setTotalPage(pages);
+                })
+                .catch(error => {
+                    console.log(error.response);
+                })
+        }      
+    }
+    //Get projects by title
+    const handleGetProjectsByTitle = () => {
+        setCurrentPage(1);
+        if(title != '') {     
+            const title_trim = title.trim();
+            getMyProjectsByTitle(title_trim, currentPage)
+                .then(response => {
+                    const response_data = response.data;
+                    const items = response_data.data;
+
+                    const totalItems = response_data.totalItems;
+                    const itemsEachPage = response_data.itemsEachPage;
+                    //Count total pages 
+                    const pages = Math.ceil(totalItems / itemsEachPage);
+                    setProjects(items);
+                    setTotalPage(pages);
+                })
+                .catch(error => {
+                    console.log(error.response);
+                })
+        } else {
+            handleGetMyProjects(currentPage);
+        }
+    }
+
+    //Handle change title
+    const handleChangeTitle = (e) => {
+        setTitle(e.target.value);
+    }
+
+    useEffect(() => {
+        handleGetMyProjects(currentPage);
     }, [currentPage])
 
     return (
-        <div className="myprojects p-4 w-fit">
+        <div className="myprojects p-4 w-full">
             <h1 className={style.myprojects__title}>My Projects</h1>
             <div className={style.myprojects__search_filter}>
                     <div className="myproject__search_filter__title w-80">
                         <label htmlFor="search_title">Title:</label>
                         <div className="search_title__input flex">
-                            <input type="text" id="search_title" name="search_title" className="bg-gray-700 text-white w-full p-2.5 rounded-md" placeholder="Type here"/>
-                            <button className="p-2.5 ml-2 text-sm font-medium text-white bg-blue-700 rounded-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                            <input onChange={handleChangeTitle} type="text" id="search_title" name="search_title" className="bg-gray-700 text-white w-full p-2.5 rounded-md" placeholder="Type here"/>
+                            <button onClick={handleGetProjectsByTitle} className="p-2.5 ml-2 text-sm font-medium text-white bg-blue-700 rounded-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                                 <span className="sr-only">Search</span>
                             </button>
@@ -68,12 +126,13 @@ const MyProjects = () => {
                     </div>
                     <div className="myproject__search_filter__status">
                         <label htmlFor="search_status">Status:</label>
-                        <select name="search_status" id="search_status" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                        <select onChange={handleGetProjectsByStatus} name="search_status" defaultValue={'default'} id="search_status" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                             <option value='default' disabled>Choose a status</option>
                             <option value="1">New</option>
                             <option value="2">In Progress</option>
                             <option value="3">Done</option>
                             <option value="4">Out of date</option>
+                            <option value="5">All</option>
                         </select>
                     </div>
             </div>
@@ -97,7 +156,11 @@ const MyProjects = () => {
                         </tbody>
                 </table>
             </div>
-            <Pagination totalPage={totalPage} setPage={setCurrentPage}/>
+            {
+                projects.length != 0 && 
+                <Pagination totalPage={totalPage} setPage={setCurrentPage}/>
+            }
+            
             <div className="px-4 py-6">
                 <button className="bg-green-400 text-white p-2 rounded-lg hover:bg-green-700">Add Project
                     <svg className="inline fill-white ml-1" width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
