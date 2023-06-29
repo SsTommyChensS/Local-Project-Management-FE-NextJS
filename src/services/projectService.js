@@ -4,3 +4,13 @@ import axiosConfig from "./axiosConfig"
 export function getMyProjects (currentPage) {
     return axiosConfig.get(`/project/my-projects/page/${currentPage}/get`);
 }
+
+//Get my projects by status
+export function getMyProjectsByStatus (status, currentPage) {
+    return axiosConfig.get(`/project/my-projects/status/${status}/page/${currentPage}/get`);
+}
+
+//Get my projects by title 
+export function getMyProjectsByTitle (title, currentPage) {
+    return axiosConfig.get(`/project/my-projects/title/${title}/page/${currentPage}/get`);
+}
