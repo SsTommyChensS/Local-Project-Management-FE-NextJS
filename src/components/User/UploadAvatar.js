@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import Image from "next/image";
+import { useRef, useState } from "react"
 
 import { uploadAvatar } from "@/services/userService";
 
@@ -9,9 +10,12 @@ import ErrorMessage from "../Items/ErrorMessage";
 
 const UploadAvatar = () => {
     const [avatar, setAvatar] = useState(null);
+    const [imagePreview, setImagePreview] = useState();
     const [successMsg, setSuccessMsg] = useState('');
     const [errorMsg, setErrorMsg] = useState('');
     const [displayMsg, setDisplayMsg] = useState(false);
+
+    const avatarElement = useRef();
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -41,8 +45,14 @@ const UploadAvatar = () => {
             })
     }
 
+    //Preview image
     const handleAvatarSelect = (e) => {
         setAvatar(e.target.files[0]);
+        if(e.target.files[0] === undefined) {
+            avatarElement.current.setAttribute("src", "/default_image.jpg");
+        } else {
+            avatarElement.current.setAttribute("src", URL.createObjectURL(e.target.files[0]));
+        }
     };
 
     //Display message
@@ -59,6 +69,9 @@ const UploadAvatar = () => {
     return (
         <div className="upload-avatar-section mt-6">
             <h1 className="font-serif font-bold text-4xl">Upload Avatar</h1>
+            <div className="upload-avatar__image-preview my-4">
+                <img src="/default_image.jpg" className="rounded-lg" ref={avatarElement} width={300} height={300} alt="Image preview"/>
+            </div>
             <div className="upload-avatar__form mt-4">
                 <form onSubmit={handleSubmit}>
                     <label className="block mb-2 text-sm font-medium" htmlFor="avatar">Avatar</label>
@@ -71,6 +84,6 @@ const UploadAvatar = () => {
             </div>
         </div>
     )
-}
+};
 
-export default UploadAvatar
+export default UploadAvatar;
