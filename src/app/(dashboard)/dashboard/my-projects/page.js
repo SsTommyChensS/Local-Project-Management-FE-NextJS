@@ -1,20 +1,46 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import style from './myprojects.module.css';
 
 import Pagination from '@/components/Pagination/Pagination';
 import AddProject from '@/components/Project/AddProject';
 
-import { getMyProjects, getMyProjectsByStatus, getMyProjectsByTitle } from '@/services/projectService';
+import { getMyProjects, getMyProjectsByStatus, getMyProjectsByTitle, removeProject } from '@/services/projectService';
 
 const MyProjects = () => {
     const [option, setOption] = useState(0);
     const [projects, setProjects] = useState([]);
+    const [selectedProject, setSelectedProject] = useState({});
     const [totalPage, setTotalPage] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
     const [title, setTitle] = useState('');
+    const removeProjectModal = useRef();
 
+    //Toggle remove project modal
+    const handleOpenRemoveProjectModal = (data) => {
+        setSelectedProject(data);
+        removeProjectModal.current.classList.remove("hidden");
+    };
+    const handleCloseRemoveProjectModal = () => {
+        setSelectedProject({});
+        removeProjectModal.current.classList.add("hidden"); 
+    };
+
+    //Display button
+    const displayButton = (project) => {
+        return (
+            <>
+                <button onClick={() => console.table(project)}className="bg-yellow-700 hover:bg-yellow-800 text-white p-2 rounded-lg w-full">Update <img src="/update.svg" className="inline ml-2 w-4 h-4"/></button>
+                <button onClick={() => handleOpenRemoveProjectModal(project)} className="bg-red-700 hover:bg-red-800 text-white p-2 rounded-lg w-full">Remove <img src="/remove.svg" className="inline ml-2 w-3 h-3"/></button>
+                <button className="bg-pink-700 hover:bg-pink-800 text-white p-2 rounded-lg w-full">Members <img src="/member.svg" className="inline ml-2 w-4 h-4"/></button>
+                <button className="bg-green-700 hover:bg-green-800 text-white p-2 rounded-lg w-full">Tasks <img src="/task.svg" className="inline ml-2 w-4 h-4"/></button>
+                <button className="bg-red-400 hover:bg-red-500 text-white p-2 rounded-lg w-full">Comments <img src="/comment.svg" className="inline ml-2 w-4 h-4"/></button>
+                <button className="bg-orange-400 hover:bg-orange-500 text-white p-2 rounded-lg w-full">Attachments <img src="/attachment.svg" className="inline ml-2 w-4 h-4"/></button>
+            </>
+        )
+    };
+    //List projects
     const list_projects = projects.map((project, index) => {
         return (
             <tr key={project._id} className="bg-white hover:bg-gray-50">
@@ -51,7 +77,7 @@ const MyProjects = () => {
             .catch(error => {
                 console.log(error.response);
             })
-    } 
+    }; 
     //Get projects by status
     const handleGetProjectsByStatus = (e) => {
         setCurrentPage(1);
@@ -75,7 +101,7 @@ const MyProjects = () => {
                     console.log(error.response);
                 })
         }      
-    }
+    };
     //Get projects by title
     const handleGetProjectsByTitle = () => {
         setCurrentPage(1);
@@ -99,19 +125,53 @@ const MyProjects = () => {
         } else {
             handleGetMyProjects(currentPage);
         }
-    }
-
+    };
+    //Remove project
+    const handleRemoveProject = () => {
+        const project_id = selectedProject._id;
+        removeProjectModal.current.classList.add("hidden"); 
+        removeProject(project_id)
+            .then(response => {
+                alert(`You have removed project: ${selectedProject.title} successfully!`);
+                //Get projects after remove
+                setCurrentPage(1);
+                handleGetMyProjects(currentPage);
+            })
+            .catch(error => {
+                console.log(error.response);
+            })       
+    };
     //Handle change title
     const handleChangeTitle = (e) => {
         setTitle(e.target.value);
-    }
-
+    };
+    
     useEffect(() => {
         handleGetMyProjects(currentPage);
     }, [currentPage])
 
     return (
         <div className="myprojects p-4 w-full">
+            {/* Remove project modal */}
+            <div ref={removeProjectModal} id="popup-modal" tabIndex="-1" className="fixed top-1/4 left-1/2 -translate-y-1/2 -translate-x-1/2 z-50 hidden p-4 overflow-x-hidden overflow-y-auto max-h-full">
+                <div className="relative w-full max-w-md max-h-full">
+                    <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                        <button onClick={handleCloseRemoveProjectModal} type="button" className="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white" data-modal-hide="popup-modal">
+                            <svg aria-hidden="true" className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"></path></svg>
+                            <span className="sr-only">Close modal</span>
+                        </button>
+                        <div className="p-6 text-center">
+                            <svg aria-hidden="true" className="mx-auto mb-4 text-gray-400 w-14 h-14 dark:text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Are you sure you want to remove this project?</h3>
+                            <button onClick={handleRemoveProject} data-modal-hide="popup-modal" type="button" className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2">
+                                Yes, I'm sure
+                            </button>
+                            <button onClick={handleCloseRemoveProjectModal} data-modal-hide="popup-modal" type="button" className="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">No, cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {/* My Project section */}
             <h1 className={style.myprojects__title}>My Projects</h1>
             <div className={style.myprojects__search_filter}>
                     <div className="myproject__search_filter__title w-80">
@@ -174,20 +234,6 @@ const MyProjects = () => {
     )
 };
 
-//Display button
-const displayButton = (project) => {
-    return (
-        <>
-            <button onClick={() => actionData.hello(project)} className="bg-yellow-700 hover:bg-yellow-800 text-white p-2 rounded-lg w-full">Update <img src="/update.svg" className="inline ml-2 w-4 h-4"/></button>
-            <button className="bg-red-700 hover:bg-red-800 text-white p-2 rounded-lg w-full">Remove <img src="/remove.svg" className="inline ml-2 w-3 h-3"/></button>
-            <button className="bg-pink-700 hover:bg-pink-800 text-white p-2 rounded-lg w-full">Members <img src="/member.svg" className="inline ml-2 w-4 h-4"/></button>
-            <button className="bg-green-700 hover:bg-green-800 text-white p-2 rounded-lg w-full">Tasks <img src="/task.svg" className="inline ml-2 w-4 h-4"/></button>
-            <button className="bg-red-400 hover:bg-red-500 text-white p-2 rounded-lg w-full">Comments <img src="/comment.svg" className="inline ml-2 w-4 h-4"/></button>
-            <button className="bg-orange-400 hover:bg-orange-500 text-white p-2 rounded-lg w-full">Attachments <img src="/attachment.svg" className="inline ml-2 w-4 h-4"/></button>
-        </>
-    )
-}
-
 //Display status
 const displayStatus = (status) => {
     switch(status){
@@ -212,11 +258,5 @@ const displayDate = (data) => {
     let date_convert = date.toLocaleDateString();
     return date_convert;
 };
-
-const actionData = {
-    hello: function (project) {
-        console.table(project);
-    }
-}
 
 export default MyProjects;
