@@ -14,3 +14,8 @@ export function getMyProjectsByStatus (status, currentPage) {
 export function getMyProjectsByTitle (title, currentPage) {
     return axiosConfig.get(`/project/my-projects/title/${title}/page/${currentPage}/get`);
 }
+
+//Remove project
+export function removeProject (project_id) {
+    return axiosConfig.delete(`/project/${project_id}/remove`);
+}
