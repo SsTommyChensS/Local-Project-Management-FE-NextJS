@@ -5,6 +5,7 @@ import style from './myprojects.module.css';
 
 import Pagination from '@/components/Pagination/Pagination';
 import AddProject from '@/components/Project/AddProject';
+import DetailProject from '@/components/Project/DetailProject';
 
 import { getMyProjects, getMyProjectsByStatus, getMyProjectsByTitle, removeProject } from '@/services/projectService';
 
@@ -16,6 +17,7 @@ const MyProjects = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [title, setTitle] = useState('');
     const removeProjectModal = useRef();
+    const detailProjectElement = useRef();
 
     //Toggle remove project modal
     const handleOpenRemoveProjectModal = (data) => {
@@ -31,12 +33,12 @@ const MyProjects = () => {
     const displayButton = (project) => {
         return (
             <>
-                <button onClick={() => console.table(project)}className="bg-yellow-700 hover:bg-yellow-800 text-white p-2 rounded-lg w-full">Update <img src="/update.svg" className="inline ml-2 w-4 h-4"/></button>
+                <button onClick={() => handleOpenDetailProject(project)}className="bg-yellow-700 hover:bg-yellow-800 text-white p-2 rounded-lg w-full">Details <img src="/detail.svg" className="inline ml-2 w-4 h-4"/></button>
                 <button onClick={() => handleOpenRemoveProjectModal(project)} className="bg-red-700 hover:bg-red-800 text-white p-2 rounded-lg w-full">Remove <img src="/remove.svg" className="inline ml-2 w-3 h-3"/></button>
-                <button className="bg-pink-700 hover:bg-pink-800 text-white p-2 rounded-lg w-full">Members <img src="/member.svg" className="inline ml-2 w-4 h-4"/></button>
+                {/* <button className="bg-pink-700 hover:bg-pink-800 text-white p-2 rounded-lg w-full">Members <img src="/member.svg" className="inline ml-2 w-4 h-4"/></button>
                 <button className="bg-green-700 hover:bg-green-800 text-white p-2 rounded-lg w-full">Tasks <img src="/task.svg" className="inline ml-2 w-4 h-4"/></button>
                 <button className="bg-red-400 hover:bg-red-500 text-white p-2 rounded-lg w-full">Comments <img src="/comment.svg" className="inline ml-2 w-4 h-4"/></button>
-                <button className="bg-orange-400 hover:bg-orange-500 text-white p-2 rounded-lg w-full">Attachments <img src="/attachment.svg" className="inline ml-2 w-4 h-4"/></button>
+                <button className="bg-orange-400 hover:bg-orange-500 text-white p-2 rounded-lg w-full">Attachments <img src="/attachment.svg" className="inline ml-2 w-4 h-4"/></button> */}
             </>
         )
     };
@@ -49,7 +51,6 @@ const MyProjects = () => {
                     {project.title}
                 </th>
                 <td className="px-6 py-4">{project.description}</td>
-                <td className="px-6 py-4">{project.content}</td>
                 <td className="px-6 py-4">{displayStatus(project.status)}</td>
                 <td className="px-6 py-4">{project.progress + ' %'}</td>
                 <td className="px-6 py-4">{displayDate(project.start_date)}</td>
@@ -145,6 +146,12 @@ const MyProjects = () => {
     const handleChangeTitle = (e) => {
         setTitle(e.target.value);
     };
+    //Update project
+    const handleOpenDetailProject = (data) => {
+        setOption(1);
+        setSelectedProject(data);
+        detailProjectElement.current?.scrollIntoView({behavior: "smooth"});
+    };
     
     useEffect(() => {
         handleGetMyProjects(currentPage);
@@ -203,7 +210,6 @@ const MyProjects = () => {
                                 <th scope="col" className="px-6 py-3">No</th>
                                 <th scope="col" className="px-6 py-3">Title</th>
                                 <th scope="col" className="px-6 py-3">Description</th>
-                                <th scope="col" className="px-6 py-3">Content</th>
                                 <th scope="col" className="px-6 py-3">Status</th>
                                 <th scope="col" className="px-6 py-3">Progress</th>
                                 <th scope="col" className="px-6 py-3">Start Date</th>
@@ -230,6 +236,7 @@ const MyProjects = () => {
                     </svg>
                 </button>
             </div>
+            { option == 1 && <DetailProject ref={detailProjectElement} project={selectedProject} setOption={setOption}/> }
         </div>
     )
 };
