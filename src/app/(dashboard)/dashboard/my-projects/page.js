@@ -17,15 +17,14 @@ const MyProjects = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [title, setTitle] = useState('');
     const removeProjectModal = useRef();
-    const detailProjectElement = useRef();
-
+    const detailProjectElement = useRef(null);
+    const addProjectElement = useRef(null);
     //Toggle remove project modal
     const handleOpenRemoveProjectModal = (data) => {
         setSelectedProject(data);
         removeProjectModal.current.classList.remove("hidden");
     };
     const handleCloseRemoveProjectModal = () => {
-        setSelectedProject({});
         removeProjectModal.current.classList.add("hidden"); 
     };
 
@@ -35,10 +34,10 @@ const MyProjects = () => {
             <>
                 <button onClick={() => handleOpenDetailProject(project)}className="bg-yellow-700 hover:bg-yellow-800 text-white p-2 rounded-lg w-full">Details <img src="/detail.svg" className="inline ml-2 w-4 h-4"/></button>
                 <button onClick={() => handleOpenRemoveProjectModal(project)} className="bg-red-700 hover:bg-red-800 text-white p-2 rounded-lg w-full">Remove <img src="/remove.svg" className="inline ml-2 w-3 h-3"/></button>
-                {/* <button className="bg-pink-700 hover:bg-pink-800 text-white p-2 rounded-lg w-full">Members <img src="/member.svg" className="inline ml-2 w-4 h-4"/></button>
+                <button className="bg-pink-700 hover:bg-pink-800 text-white p-2 rounded-lg w-full">Members <img src="/member.svg" className="inline ml-2 w-4 h-4"/></button>
                 <button className="bg-green-700 hover:bg-green-800 text-white p-2 rounded-lg w-full">Tasks <img src="/task.svg" className="inline ml-2 w-4 h-4"/></button>
                 <button className="bg-red-400 hover:bg-red-500 text-white p-2 rounded-lg w-full">Comments <img src="/comment.svg" className="inline ml-2 w-4 h-4"/></button>
-                <button className="bg-orange-400 hover:bg-orange-500 text-white p-2 rounded-lg w-full">Attachments <img src="/attachment.svg" className="inline ml-2 w-4 h-4"/></button> */}
+                <button className="bg-orange-400 hover:bg-orange-500 text-white p-2 rounded-lg w-full">Attachments <img src="/attachment.svg" className="inline ml-2 w-4 h-4"/></button>
             </>
         )
     };
@@ -146,9 +145,15 @@ const MyProjects = () => {
     const handleChangeTitle = (e) => {
         setTitle(e.target.value);
     };
+
+    //Create new project
+    const handleOpenCreateProject = () => {
+        setOption(1);
+        addProjectElement.current?.scrollIntoView({behavior: "smooth"});
+    }
     //Update project
     const handleOpenDetailProject = (data) => {
-        setOption(1);
+        setOption(2);
         setSelectedProject(data);
         detailProjectElement.current?.scrollIntoView({behavior: "smooth"});
     };
@@ -228,7 +233,7 @@ const MyProjects = () => {
             }
             
             <div className="px-4 py-6">
-                <button className="bg-green-400 text-white p-2 rounded-lg hover:bg-green-700">Add Project
+                <button onClick={handleOpenCreateProject} className="bg-green-400 text-white p-2 rounded-lg hover:bg-green-700">Add Project
                     <svg className="inline fill-white ml-1" width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <g id="Edit / Add_Plus">
                         <path id="Vector" d="M6 12H12M12 12H18M12 12V18M12 12V6" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -236,7 +241,8 @@ const MyProjects = () => {
                     </svg>
                 </button>
             </div>
-            { option == 1 && <DetailProject ref={detailProjectElement} project={selectedProject} setOption={setOption}/> }
+            { option == 1 && <AddProject ref={addProjectElement} setOption={setOption}/> }
+            { option == 2 && <DetailProject ref={detailProjectElement} project={selectedProject} setOption={setOption}/> }
         </div>
     )
 };
