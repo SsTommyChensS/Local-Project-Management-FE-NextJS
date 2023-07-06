@@ -24,3 +24,8 @@ export function removeProject (project_id) {
 export function updateProject(project_id, data) {
     return axiosConfig.put(`/project/${project_id}/update`, data);
 }
+
+//Create project
+export function addProject(data) {
+    return axiosConfig.post(`/project/add`, data);
+}
