@@ -6,6 +6,7 @@ import style from './myprojects.module.css';
 import Pagination from '@/components/Pagination/Pagination';
 import AddProject from '@/components/Project/AddProject';
 import DetailProject from '@/components/Project/DetailProject';
+import ListAttachments from '@/components/Attachment/ListAttachments';
 
 import { getMyProjects, getMyProjectsByStatus, getMyProjectsByTitle, removeProject } from '@/services/projectService';
 
@@ -19,6 +20,7 @@ const MyProjects = () => {
     const removeProjectModal = useRef();
     const detailProjectElement = useRef(null);
     const addProjectElement = useRef(null);
+    const attachmentElement = useRef(null);
     //Toggle remove project modal
     const handleOpenRemoveProjectModal = (data) => {
         setSelectedProject(data);
@@ -37,7 +39,7 @@ const MyProjects = () => {
                 <button className="bg-pink-700 hover:bg-pink-800 text-white p-2 rounded-lg w-full">Members <img src="/member.svg" className="inline ml-2 w-4 h-4"/></button>
                 <button className="bg-green-700 hover:bg-green-800 text-white p-2 rounded-lg w-full">Tasks <img src="/task.svg" className="inline ml-2 w-4 h-4"/></button>
                 <button className="bg-red-400 hover:bg-red-500 text-white p-2 rounded-lg w-full">Comments <img src="/comment.svg" className="inline ml-2 w-4 h-4"/></button>
-                <button className="bg-orange-400 hover:bg-orange-500 text-white p-2 rounded-lg w-full">Attachments <img src="/attachment.svg" className="inline ml-2 w-4 h-4"/></button>
+                <button onClick={() => handleOpenListAttachments(project)} className="bg-orange-400 hover:bg-orange-500 text-white p-2 rounded-lg w-full">Attachments <img src="/attachment.svg" className="inline ml-2 w-4 h-4"/></button>
             </>
         )
     };
@@ -151,13 +153,19 @@ const MyProjects = () => {
         setOption(1);
         addProjectElement.current?.scrollIntoView({behavior: "smooth"});
     }
-    //Update project
+    //Detail project
     const handleOpenDetailProject = (data) => {
         setOption(2);
         setSelectedProject(data);
         detailProjectElement.current?.scrollIntoView({behavior: "smooth"});
     };
-    
+    //List attachments
+    const handleOpenListAttachments = (data) => {
+        setOption(6);
+        setSelectedProject(data);
+        attachmentElement.current?.scrollIntoView({behavior: "smooth"});      
+    };
+
     useEffect(() => {
         handleGetMyProjects(currentPage);
     }, [currentPage])
@@ -243,6 +251,7 @@ const MyProjects = () => {
             </div>
             { option == 1 && <AddProject ref={addProjectElement} setOption={setOption}/> }
             { option == 2 && <DetailProject ref={detailProjectElement} project={selectedProject} setOption={setOption}/> }
+            { option == 6 && <ListAttachments ref={attachmentElement} project={selectedProject} setOption={setOption}/> }
         </div>
     )
 };
