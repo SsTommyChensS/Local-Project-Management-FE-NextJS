@@ -6,10 +6,13 @@ import { getAttachments, removeAttachment } from '@/services/attachmentService';
 import Pagination from '../Pagination/Pagination';
 import TitleHeading from '../Items/TitleHeading';
 
+import AddAttachments from './AddAttachments';
+
 const ListAttachments = ({ project, setOption }, ref) => {
     const [attachments, setAttachments] = useState([]);
     const [totalPage, setTotalPage] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
+    const [openAddAttachment, setOpenAddAttachment] = useState(false);
 
     //Get attachments by project
     const handleGetAttachments = (currentPage) => {
@@ -103,6 +106,16 @@ const ListAttachments = ({ project, setOption }, ref) => {
                 attachments.length != 0 && 
                 <Pagination totalPage={totalPage} setPage={setCurrentPage} currentPage={currentPage} />
             }
+            <div className="px-4 py-6">
+                <button onClick={() => setOpenAddAttachment(!openAddAttachment)} className="bg-orange-400 text-white p-2 rounded-lg hover:bg-orange-700">Add Attachments
+                    <svg className="inline fill-white ml-1" width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g id="Edit / Add_Plus">
+                        <path id="Vector" d="M6 12H12M12 12H18M12 12V18M12 12V6" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        </g>
+                    </svg>
+                </button>
+            </div>
+            { openAddAttachment && <AddAttachments project={project}/>}
         </div>
     )
 }
