@@ -11,6 +11,8 @@ export function removeAttachment (attachment_id) {
 }
 
 //Add attachment
-export function addAttachments (project_id) {
-    return axiosConfig.post(`attachments/project/${project_id}/add`);
+export function addAttachments (project_id, data) {
+    return axiosConfig.post(`attachments/project/${project_id}/add`, data, {
+        headers: { "Content-Type": "multipart/form-data"}
+    });
 }
