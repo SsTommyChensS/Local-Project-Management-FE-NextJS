@@ -7,6 +7,7 @@ import * as Yup from "yup"
 
 import SuccessMessage from '@/components/Items/SuccessMessage';
 import ErrorMessage from '@/components/Items/ErrorMessage';
+import TitleHeading from '@/components/Items/TitleHeading';
 
 import { updateProject } from '@/services/projectService';
 
@@ -129,9 +130,7 @@ const DetailProject = ({ project, setOption }, ref) => {
 
     return (
         <div ref={ref} className="update-project-section w-2/3 mt-4 px-4">
-            <h1 className="update-project__title p-3 bg-orange-100 text-lime-800 font-serif capitalize tracking-wide italic font-bold text-lg rounded-lg">
-                Details of the project <span className="ml-2 text-red-700 underline text-2xl">{project.title}</span>
-            </h1>
+            <TitleHeading titleMessage="Details of the project" item={project.title} setOption={setOption}/>
             <div className="update-project__form mt-6">
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="relative z-0 w-full mb-6 group">
