@@ -24,20 +24,18 @@ export async function middleware(req) {
         //Renew token using refresh token
         let new_accessToken;
         const refreshToken = req.cookies.get("jwt").value;
-        await renewToken(refreshToken)
-          .then(res => res.json())
-          .then(data => {
-              new_accessToken = data.data.accessToken;
-          })
-          
-          const response = NextResponse.next();
-          response.cookies.set({
-            name: "token",
-            value: new_accessToken,
-            maxAge: 60 * 60
-          });
+        const res = await renewToken(refreshToken);
+        const data = await res.json();
+        new_accessToken = data.data.accessToken;
+  
+        const response = NextResponse.next();
+        response.cookies.set({
+          name: "token",
+          value: new_accessToken,
+          maxAge: 60 * 60
+        });
 
-          return response;
+        return response;
 	  }
   }
 }
