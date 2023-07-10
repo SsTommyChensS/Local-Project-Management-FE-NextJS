@@ -79,7 +79,7 @@ const ListAttachments = ({ project, setOption }, ref) => {
 
     useEffect(() => {
         handleGetAttachments(currentPage);
-    }, [project]);
+    }, [project, currentPage]);
 
     return (
         <div ref={ref} className="list-attachments-section w-4/5 mt-4 px-4">
