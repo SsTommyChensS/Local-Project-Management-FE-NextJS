@@ -6,6 +6,7 @@ import style from './myprojects.module.css';
 import Pagination from '@/components/Pagination/Pagination';
 import AddProject from '@/components/Project/AddProject';
 import DetailProject from '@/components/Project/DetailProject';
+import ListMembers from '@/components/Member/ListMembers';
 import ListComments from '@/components/Comment/ListComments';
 import ListAttachments from '@/components/Attachment/ListAttachments';
 
@@ -19,6 +20,7 @@ const MyProjects = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [title, setTitle] = useState('');
     const removeProjectModal = useRef();
+    const memberElement = useRef(null);
     const detailProjectElement = useRef(null);
     const addProjectElement = useRef(null);
     const commentElement = useRef(null);
@@ -38,7 +40,7 @@ const MyProjects = () => {
             <>
                 <button onClick={() => handleOpenDetailProject(project)}className="bg-yellow-700 hover:bg-yellow-800 text-white p-2 rounded-lg w-full">Details <img src="/detail.svg" className="inline ml-2 w-4 h-4"/></button>
                 <button onClick={() => handleOpenRemoveProjectModal(project)} className="bg-red-700 hover:bg-red-800 text-white p-2 rounded-lg w-full">Remove <img src="/remove.svg" className="inline ml-2 w-3 h-3"/></button>
-                <button className="bg-pink-700 hover:bg-pink-800 text-white p-2 rounded-lg w-full">Members <img src="/member.svg" className="inline ml-2 w-4 h-4"/></button>
+                <button onClick={() => handleOpenListMembers(project)} className="bg-pink-700 hover:bg-pink-800 text-white p-2 rounded-lg w-full">Members <img src="/member.svg" className="inline ml-2 w-4 h-4"/></button>
                 <button className="bg-green-700 hover:bg-green-800 text-white p-2 rounded-lg w-full">Tasks <img src="/task.svg" className="inline ml-2 w-4 h-4"/></button>
                 <button onClick={() => handleOpenListComments(project)} className="bg-red-400 hover:bg-red-500 text-white p-2 rounded-lg w-full">Comments <img src="/comment.svg" className="inline ml-2 w-4 h-4"/></button>
                 <button onClick={() => handleOpenListAttachments(project)} className="bg-orange-400 hover:bg-orange-500 text-white p-2 rounded-lg w-full">Attachments <img src="/attachment.svg" className="inline ml-2 w-4 h-4"/></button>
@@ -161,6 +163,12 @@ const MyProjects = () => {
         setSelectedProject(data);
         detailProjectElement.current?.scrollIntoView({behavior: "smooth"});
     };
+    //List members
+    const handleOpenListMembers = (data) => {
+        setOption(3);
+        setSelectedProject(data);
+        memberElement.current?.scrollIntoView({behavior: "smooth"});
+    }
     //List comments
     const handleOpenListComments = (data) => {
         setOption(5);
@@ -259,6 +267,7 @@ const MyProjects = () => {
             </div>
             { option == 1 && <AddProject ref={addProjectElement} setOption={setOption}/> }
             { option == 2 && <DetailProject ref={detailProjectElement} project={selectedProject} setOption={setOption}/> }
+            { option == 3 && <ListMembers ref={memberElement} project={selectedProject} setOption={setOption}/> }
             { option == 5 && <ListComments ref={commentElement} project={selectedProject} setOption={setOption}/> }
             { option == 6 && <ListAttachments ref={attachmentElement} project={selectedProject} setOption={setOption}/> }
         </div>
