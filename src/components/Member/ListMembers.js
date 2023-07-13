@@ -9,6 +9,7 @@ import TitleHeading from '../Items/TitleHeading';
 import ErrorMessage from "../Items/ErrorMessage";
 
 import ChangePermission from "./ChangePermission";
+import InviteUser from "./InviteUser"
 
 const ListMembers = ({ project, setOption }, ref) => { 
     const [members, setMembers] = useState([]); 
@@ -111,7 +112,7 @@ const ListMembers = ({ project, setOption }, ref) => {
                 : <ErrorMessage message="There aren't any members!"/>
             }
             <div className="px-4 py-6">
-                <button onClick={() => setOpenInviteUser(!openInviteUser)} className="bg-orange-400 text-white p-2 rounded-lg hover:bg-orange-700">Invite
+                <button onClick={() => setOpenInviteUser(true)} className="bg-orange-400 text-white p-2 rounded-lg hover:bg-orange-700">Invite
                     <svg className="inline fill-white ml-1" width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <g id="Edit / Add_Plus">
                         <path id="Vector" d="M6 12H12M12 12H18M12 12V18M12 12V6" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -119,9 +120,8 @@ const ListMembers = ({ project, setOption }, ref) => {
                     </svg>
                 </button>
             </div>
-            {
-                openChangePermission && <ChangePermission member={selectedMember} project={project} setOpenChangePermission={setOpenChangePermission}/>
-            }
+            { openChangePermission && <ChangePermission member={selectedMember} project={project} setOpenChangePermission={setOpenChangePermission}/> }
+            { openInviteUser && <InviteUser project={project} setOpenInviteUser={setOpenInviteUser}/>}
         </div>
     )
 };
