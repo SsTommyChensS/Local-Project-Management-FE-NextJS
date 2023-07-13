@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+<svg width="800px" height="800px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<style>.cls-1{fill:#b24040;}.cls-2{fill:#ce5959;}.cls-3{fill:#6c2e7c;}</style>
+</defs>
+<g id="Icons">
+<path class="cls-1" d="M23,12A11,11,0,0,1,1,12a10.827,10.827,0,0,1,.29-2.5,11,11,0,0,1,21.42,0A10.827,10.827,0,0,1,23,12Z"/>
+<ellipse class="cls-2" cx="12" cy="9.5" rx="10.71" ry="8.5"/>
+</g>
+<g data-name="Layer 4" id="Layer_4">
+<path class="cls-3" d="M12,0A12,12,0,1,0,24,12,12.013,12.013,0,0,0,12,0Zm0,22A10,10,0,1,1,22,12,10.011,10.011,0,0,1,12,22Z"/>
+<path class="cls-3" d="M16.707,7.293a1,1,0,0,0-1.414,0L12,10.586,8.707,7.293A1,1,0,1,0,7.293,8.707L10.586,12,7.293,15.293a1,1,0,1,0,1.414,1.414L12,13.414l3.293,3.293a1,1,0,0,0,1.414-1.414L13.414,12l3.293-3.293A1,1,0,0,0,16.707,7.293Z"/>
+</g>
+</svg>
