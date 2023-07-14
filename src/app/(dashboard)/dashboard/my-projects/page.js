@@ -243,7 +243,7 @@ const MyProjects = () => {
                                 <th scope="col" className="px-6 py-3">Progress</th>
                                 <th scope="col" className="px-6 py-3">Start Date</th>
                                 <th scope="col" className="px-6 py-3">End Date</th>
-                                <th scope="col" className="px-6 py-3">Actions</th>
+                                <th scope="col" className="px-6 py-3 w-40">Actions</th>
                             </tr>
                         </thead>
                         <tbody>

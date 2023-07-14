@@ -11,10 +11,9 @@ export const metadata = {
 
 export default function AuthLayout({ children }) {
   return (
-    <html lang="en">
-        <body>
+    <div className="dashboard__main min-w-max">
             <DashboardNavbar/>
-              <div className={style.main}>
+              <div className="dashboard__content flex min-h-screen">
                 <div className={style.sidebar}>
                     <DashboardSidebar/>
                 </div>
@@ -23,7 +22,6 @@ export default function AuthLayout({ children }) {
                 </div>
               </div>
             <Footer/>
-        </body>
-    </html>
+    </div>
   )
 }
