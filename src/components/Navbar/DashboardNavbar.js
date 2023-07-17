@@ -44,7 +44,7 @@ const DashboardNavbar = () => {
     return (
         <div className="navbar">
             <nav className="bg-white border-gray-200 dark:bg-gray-900">
-                <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+                <div className="flex flex-wrap items-center justify-between mx-auto p-4">
                     <a href="#" className="flex items-center">
                         <Image src="/local_project_icon.svg" width={40} height={40} className="mr-3" alt="Local Project Management icon"/>
                         <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Dashboard</span>

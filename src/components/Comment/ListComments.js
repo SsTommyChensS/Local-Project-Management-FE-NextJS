@@ -8,15 +8,13 @@ import PostComment from "./PostComment";
 
 import TitleHeading from "../Items/TitleHeading";
 import Pagination from "../Pagination/Pagination";
-import SuccessMessage from "../Items/SuccessMessage";
 import ErrorMessage from "../Items/ErrorMessage";
 
 const ListComments = ({ project, setOption }, ref) => {
     const [comments, setComments] = useState([]);
     const [totalPage, setTotalPage] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
-    const [openPostComment, setOpenPostComment] = useState(false);
-
+    
     //Get comments by project
     const handleGetComments = () => {
         getComments(project._id, currentPage)
@@ -70,16 +68,7 @@ const ListComments = ({ project, setOption }, ref) => {
                 ? <Pagination totalPage={totalPage} setPage={setCurrentPage} currentPage={currentPage} />
                 : <ErrorMessage message="There aren't any comments!"/>
             }
-            <div className="px-4 py-6">
-                <button onClick={() => setOpenPostComment(!openPostComment)} className="bg-orange-400 text-white p-2 rounded-lg hover:bg-orange-700">Post Comment
-                    <svg className="inline fill-white ml-1" width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <g id="Edit / Add_Plus">
-                        <path id="Vector" d="M6 12H12M12 12H18M12 12V18M12 12V6" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        </g>
-                    </svg>
-                </button>
-            </div>
-            { openPostComment && <PostComment project={project}/>}
+            <PostComment project={project}/>
         </div>
         
     )

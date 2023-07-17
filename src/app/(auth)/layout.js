@@ -10,9 +10,11 @@ export default function AuthLayout({ children }) {
   return (
     <html lang="en">
         <body>
-            <DefaultNavbar/>
-              {children}
-            <Footer/>
+            <div className="homepage-layout-section min-w-min overflow-hidden">
+              <DefaultNavbar/>
+                {children}
+              <Footer/>   
+            </div>
         </body>
     </html>
   )

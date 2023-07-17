@@ -105,7 +105,7 @@ const MyProfile = () => {
     };
 
     return (
-            <div className="p-4">
+            <div className="my-profile-section p-4">
                 <h1 className={style.myprofile_title}>My Profile</h1>
                 <label htmlFor="fullname" className="block mb-4 text-sm font-medium text-gray-900 dark:text-black">Avatar</label>
                 <img className="object-cover rounded-full w-40 h-40" src={displayAvatar(avatar)} alt="My avatar" />
