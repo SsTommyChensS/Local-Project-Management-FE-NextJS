@@ -11,10 +11,13 @@ import { getYourProfile, updateProfile } from '@/services/userService';
 
 import UploadAvatar from '@/components/User/UploadAvatar';
 import SuccessMessage from '@/components/Items/SuccessMessage';
+import ErrorMessage from '@/components/Items/ErrorMessage';
 
 const MyProfile = () => {
     const [isDisabled, setisDisabled] = useState(true);
     const [displayMsg, setDisplayMsg] = useState(false);
+    const [errorMsg, setErrorMsg] = useState('');
+    const [successMsg, setSuccessMsg] = useState('');
     const [avatar, setAvatar] = useState({});
     const [userData, setUserData] = useState({});
     const [displayUploadAvatar, setDisplayUploadAvatar] = useState(false);
@@ -94,15 +97,41 @@ const MyProfile = () => {
 
                 setisDisabled(true);
                 setDisplayMsg(true);
+                setSuccessMsg('Update your profile successfully!');
 
                 setTimeout(() => {
                     setDisplayMsg(false);
+                    setSuccessMsg('');
                 }, 3000);
             })
             .catch(error => {
-                console.log(error);
+                const error_response = error.response;
+                const error_message = error_response.data.message;
+
+                setDisplayMsg(true);
+                setErrorMsg(error_message);
+
+                setTimeout(() => {
+                    setDisplayMsg(false);
+                    setErrorMsg('');
+                }, 3000);
             })
     };
+
+    //Display message
+    const DisplayMessage = () => {
+        if(displayMsg && successMsg != '') {
+            return (
+                <SuccessMessage message={successMsg} />
+            )
+        } 
+
+        if(displayMsg && errorMsg != '') {
+            return (
+                <ErrorMessage message={errorMsg} />
+            )
+        }
+    }
 
     return (
             <div className="my-profile-section p-4">
@@ -155,11 +184,11 @@ const MyProfile = () => {
                         <input {...register("code")} type="text" id="code" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200" disabled/>
                     </div>
                     <div className="flex flex-row gap-6">
-                        <button type="button" onClick={() => setisDisabled(!isDisabled)} className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:focus:ring-yellow-800">
-                            Update <img src="/update.svg" className="inline ml-2 w-5 h-5"/>
+                        <button type="button" onClick={() => setisDisabled(!isDisabled)} className="p-2 text-white text-sm bg-yellow-400 hover:bg-yellow-500 rounded-lg">
+                            Update <img src="/update.svg" className="inline ml-2 w-4 h-4"/>
                         </button>
-                        <button type="submit" className="text-white bg-blue-700 disabled:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:focus:ring-blue-800" disabled={isDisabled}>
-                            Save  <img src="/save.svg" className="inline ml-2 w-5 h-5"/>
+                        <button type="submit" className="text-white text-sm bg-blue-700 hover:bg-blue-800 disabled:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg p-2 text-center dark:bg-blue-600 dark:focus:ring-blue-800" disabled={isDisabled}>
+                            Save  <img src="/save.svg" className="inline ml-2 w-4 h-4"/>
                         </button>
                         <button type="button" onClick={handleDisplayUploadAvatar} className="text-white bg-green-700 disabled:bg-gray-300 hover:bg-green-800 rounded-lg px-5 py-2.5" disabled={isDisabled}>
                             Upload Avatar <img src="/upload_avatar.svg" className="inline ml-2 w-5 h-5"/>
@@ -169,7 +198,7 @@ const MyProfile = () => {
                 {
                     displayMsg && (
                         <div className="mt-4">
-                            <SuccessMessage message="Update your profile successfully!"/>
+                            <DisplayMessage />
                         </div>
                     )
                 }
