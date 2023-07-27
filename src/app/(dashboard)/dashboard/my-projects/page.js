@@ -47,6 +47,7 @@ const MyProjects = () => {
             </>
         )
     };
+
     //List projects
     const list_projects = projects.map((project, index) => {
         return (
@@ -55,7 +56,7 @@ const MyProjects = () => {
                 <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                     {project.title}
                 </th>
-                <td className="px-6 py-4">{project.description}</td>
+                <td className="px-6 py-4 break-all">{project.description}</td>
                 <td className="px-6 py-4">{displayStatus(project.status)}</td>
                 <td className="px-6 py-4">{project.progress + ' %'}</td>
                 <td className="px-6 py-4">{displayDate(project.start_date)}</td>
@@ -109,6 +110,11 @@ const MyProjects = () => {
         }      
     };
     //Get projects by title
+    const onKeyUp = event => {
+        if(event.key === 'Enter') {
+            handleGetProjectsByTitle();
+        }
+    };
     const handleGetProjectsByTitle = () => {
         setCurrentPage(1);
         if(title != '') {     
@@ -213,7 +219,7 @@ const MyProjects = () => {
                     <div className="myproject__search_filter__title w-80">
                         <label htmlFor="search_title">Title:</label>
                         <div className="search_title__input flex">
-                            <input onChange={handleChangeTitle} type="text" id="search_title" name="search_title" className="bg-gray-700 text-white w-full p-2.5 rounded-md" placeholder="Type here"/>
+                            <input onChange={handleChangeTitle} onKeyUp={onKeyUp} type="text" id="search_title" name="search_title" className="bg-gray-700 text-white w-full p-2.5 rounded-md" placeholder="Type here"/>
                             <button onClick={handleGetProjectsByTitle} className="p-2.5 ml-2 text-sm font-medium text-white bg-blue-700 rounded-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                                 <span className="sr-only">Search</span>
