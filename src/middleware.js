@@ -16,7 +16,7 @@ export async function middleware(req) {
   if(req.nextUrl.pathname.startsWith('/dashboard')) {
     if(!req.cookies.has("jwt")) {
       const url = req.nextUrl.clone();
-      url.pathname = "/login";
+      url.pathname = "/home";
       return NextResponse.redirect(url, req.url);
     }
     //Check accessToken

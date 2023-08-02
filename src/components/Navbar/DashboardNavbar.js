@@ -30,7 +30,7 @@ const handleLogout = () => {
     //Remove accessToken in cookie
     deleteCookie("token");
     deleteCookie("username");
-    redirect('/home');
+    window.location.href = '/home';
 }
 
 const DashboardNavbar = () => {
